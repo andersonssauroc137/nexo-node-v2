@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}
+Criar Operador | NEXO NODE
+{% endblock %}
+
+{% block content %}
+
+<section class="terminal auth-terminal">
+
+    <p class="terminal-label">
+        NEXO NODE // REGISTRO
+    </p>
+
+    <h1>
+        Novo Operador
+    </h1>
+
+    <p class="terminal-description">
+        Crie sua identidade inicial na Rede.
+    </p>
+
+    <form
+        method="post"
+        class="auth-form"
+    >
+
+        {% csrf_token %}
+
+        <div class="form-field">
+            <label
+                for="{{ form.username.id_for_label }}"
+            >
+                Nome de usuário
+            </label>
+
+            {{ form.username }}
+
+            {% for error in form.username.errors %}
+                <p class="form-error">
+                    {{ error }}
+                </p>
+            {% endfor %}
+        </div>
+
+
+        <div class="form-field">
+            <label
+                for="{{ form.email.id_for_label }}"
+            >
+                E-mail
+            </label>
+
+            {{ form.email }}
+
+            {% for error in form.email.errors %}
+                <p class="form-error">
+                    {{ error }}
+                </p>
+            {% endfor %}
+        </div>
+
+
+        <div class="form-field">
+            <label
+                for="{{ form.password1.id_for_label }}"
+            >
+                Senha
+            </label>
+
+            {{ form.password1 }}
+
+            {% for error in form.password1.errors %}
+                <p class="form-error">
+                    {{ error }}
+                </p>
+            {% endfor %}
+        </div>
+
+
+        <div class="form-field">
+            <label
+                for="{{ form.password2.id_for_label }}"
+            >
+                Confirmar senha
+            </label>
+
+            {{ form.password2 }}
+
+            {% for error in form.password2.errors %}
+                <p class="form-error">
+                    {{ error }}
+                </p>
+            {% endfor %}
+        </div>
+
+
+        {% for error in form.non_field_errors %}
+            <p class="form-error">
+                {{ error }}
+            </p>
+        {% endfor %}
+
+
+        <button
+            type="submit"
+            class="terminal-button"
+        >
+            CRIAR OPERADOR
+        </button>
+
+    </form>
+
+    <p class="auth-link">
+        Já possui Registro?
+        <a href="{% url 'operators:login' %}">
+            Entrar
+        </a>
+    </p>
+
+</section>
+
+{% endblock %}

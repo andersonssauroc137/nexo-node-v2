@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}
+Escolha da Facção | NEXO NODE
+{% endblock %}
+
+{% block content %}
+
+<section class="terminal">
+
+    <p class="terminal-label">
+        NEXO NODE // IDENTIDADE
+    </p>
+
+    <h1>
+        Escolha da Facção
+    </h1>
+
+    <p>
+        Operador identificado:
+        <strong>{{ request.user.username }}</strong>
+    </p>
+
+    <p>
+        Registro FN:
+        <strong>{{ request.user.network_id }}</strong>
+    </p>
+
+    <div class="network-message">
+        CATÁLOGO DE FACÇÕES
+        AGUARDANDO SINCRONIZAÇÃO...
+    </div>
+
+    <p class="status">
+        PRÓXIMA ETAPA:
+        SPRINT 003
+    </p>
+
+</section>
+
+{% endblock %}

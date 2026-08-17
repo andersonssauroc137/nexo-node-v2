@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}
+Fortaleza Node
+{% endblock %}
+
+{% block content %}
+
+<section class="terminal">
+
+    <p class="terminal-label">
+        NEXO NODE // FORTALEZA NODE
+    </p>
+
+    <h1>
+        Cidade Liberada
+    </h1>
+
+    <p>
+        Operador:
+        {{ request.user.network_id }}
+    </p>
+
+    <p class="status">
+        ACESSO AUTORIZADO
+    </p>
+
+</section>
+
+{% endblock %}

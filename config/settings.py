@@ -133,3 +133,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 AUTH_USER_MODEL = "operators.Operator"
+
+LOGIN_URL = "operators:login"
+
+LOGOUT_REDIRECT_URL = "core:home"

@@ -16,9 +16,71 @@ NEXO NODE
         Fortaleza Node
     </h1>
 
-    <p>
-        Nova infraestrutura inicializada.
-    </p>
+
+    {% if request.user.is_authenticated %}
+
+        <p>
+            Operador conectado:
+            <strong>
+                {{ request.user.username }}
+            </strong>
+        </p>
+
+        <p>
+            Registro:
+            <strong>
+                {{ request.user.network_id }}
+            </strong>
+        </p>
+
+        <a
+            class="terminal-link"
+            href="{% url 'operators:continue' %}"
+        >
+            CONTINUAR SINCRONIZAÇÃO →
+        </a>
+
+        <form
+            method="post"
+            action="{% url 'operators:logout' %}"
+            class="logout-form"
+        >
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                class="text-button"
+            >
+                DESCONECTAR
+            </button>
+        </form>
+
+    {% else %}
+
+        <p>
+            Uma nova identidade aguarda
+            sincronização.
+        </p>
+
+        <div class="home-actions">
+
+            <a
+                href="{% url 'operators:register' %}"
+                class="terminal-link"
+            >
+                CRIAR OPERADOR
+            </a>
+
+            <a
+                href="{% url 'operators:login' %}"
+                class="terminal-link secondary"
+            >
+                ENTRAR
+            </a>
+
+        </div>
+
+    {% endif %}
 
     <p class="status">
         STATUS: ONLINE

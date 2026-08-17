@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}
+Entrar | NEXO NODE
+{% endblock %}
+
+{% block content %}
+
+<section class="terminal auth-terminal">
+
+    <p class="terminal-label">
+        NEXO NODE // ACESSO
+    </p>
+
+    <h1>
+        Identificação
+    </h1>
+
+    <form
+        method="post"
+        class="auth-form"
+    >
+
+        {% csrf_token %}
+
+        <div class="form-field">
+
+            <label
+                for="{{ form.username.id_for_label }}"
+            >
+                Operador
+            </label>
+
+            {{ form.username }}
+
+        </div>
+
+        <div class="form-field">
+
+            <label
+                for="{{ form.password.id_for_label }}"
+            >
+                Senha
+            </label>
+
+            {{ form.password }}
+
+        </div>
+
+        {% if form.errors %}
+            <p class="form-error">
+                Credenciais inválidas.
+            </p>
+        {% endif %}
+
+        <button
+            type="submit"
+            class="terminal-button"
+        >
+            CONECTAR
+        </button>
+
+    </form>
+
+    <p class="auth-link">
+        Ainda não possui identidade?
+
+        <a href="{% url 'operators:register' %}">
+            Criar Operador
+        </a>
+    </p>
+
+</section>
+
+{% endblock %}
