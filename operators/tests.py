@@ -38,6 +38,18 @@ class OperatorModelTests(TestCase):
             Operator.OnboardingStep.CHOOSE_FACTION,
         )
 
+    def test_operator_starts_without_faction(self):
+
+        operator = Operator.objects.create_user(
+            username="a9-faction-test",
+            email="a9-faction@nexo.test",
+            password="StrongTestPass989!",
+        )
+
+        self.assertIsNone(
+            operator.faction
+        )
+
 
 class OperatorRegistrationTests(TestCase):
 

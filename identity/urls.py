@@ -15,6 +15,12 @@ urlpatterns = [
     ),
 
     path(
+        "faccao/<slug:faction_slug>/",
+        views.confirm_faction,
+        name="confirm_faction",
+    ),
+
+    path(
         "teste/",
         views.cognitive_test,
         name="cognitive_test",

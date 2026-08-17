@@ -1,40 +1,101 @@
 {% extends "base.html" %}
 
 {% block title %}
-Escolha da Facção | NEXO NODE
+Escolha da Factrion | NEXO NODE
 {% endblock %}
 
 {% block content %}
 
-<section class="terminal">
+<section class="identity-screen">
 
-    <p class="terminal-label">
-        NEXO NODE // IDENTIDADE
-    </p>
+    <header class="identity-header">
 
-    <h1>
-        Escolha da Facção
-    </h1>
+        <p class="terminal-label">
+            NEXO NODE // IDENTIDADE
+        </p>
 
-    <p>
-        Operador identificado:
-        <strong>{{ request.user.username }}</strong>
-    </p>
+        <h1>
+            Escolha da Factrion
+        </h1>
 
-    <p>
-        Registro FN:
-        <strong>{{ request.user.network_id }}</strong>
-    </p>
+        <div class="operator-identification">
 
-    <div class="network-message">
-        CATÁLOGO DE FACÇÕES
-        AGUARDANDO SINCRONIZAÇÃO...
+            <span>
+                OPERADOR
+                <strong>
+                    {{ request.user.username }}
+                </strong>
+            </span>
+
+            <span>
+                REGISTRO
+                <strong>
+                    {{ request.user.network_id }}
+                </strong>
+            </span>
+
+        </div>
+
+        <p class="identity-intro">
+            Factrions representam grupos sociais,
+            culturais e ideológicos reconhecidos
+            pela Rede de Fortaleza Node.
+        </p>
+
+        <p class="identity-warning">
+            Esta escolha será registrada como parte
+            da sua identidade inicial.
+        </p>
+
+    </header>
+
+
+    <div class="faction-grid">
+
+        {% for faction in factions %}
+
+            <article
+                class="faction-card"
+                style="
+                    --faction-color:
+                    {{ faction.color }};
+                "
+            >
+
+                <div class="faction-symbol">
+                    {{ faction.symbol }}
+                </div>
+
+                <div class="faction-code">
+                    {{ faction.code }}
+                </div>
+
+                <h2>
+                    {{ faction.name }}
+                </h2>
+
+                <p>
+                    {{ faction.description }}
+                </p>
+
+                <a
+                    href="{% url 'identity:confirm_faction' faction.slug %}"
+                    class="faction-select"
+                    >
+                    SELECIONAR
+                </a>
+
+            </article>
+
+        {% empty %}
+
+            <div class="network-message">
+                NENHUMA FACTRION DISPONÍVEL.
+            </div>
+
+        {% endfor %}
+
     </div>
-
-    <p class="status">
-        PRÓXIMA ETAPA:
-        SPRINT 003
-    </p>
 
 </section>
 

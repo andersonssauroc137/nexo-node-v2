@@ -59,6 +59,15 @@ class Operator(AbstractUser):
         blank=True,
     )
 
+    faction = models.ForeignKey(
+        "identity.Faction",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="operators",
+        verbose_name="Factrion",
+    )
+
     onboarding_step = models.CharField(
         max_length=30,
         choices=OnboardingStep.choices,

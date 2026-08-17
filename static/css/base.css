@@ -249,3 +249,263 @@ body {
 
     cursor: pointer;
 }
+
+.identity-screen {
+    width: min(1180px, 100%);
+}
+
+.identity-header {
+    margin-bottom: 36px;
+}
+
+.identity-header h1 {
+    margin: 12px 0 18px;
+
+    color: var(--cyan);
+
+    font-size: clamp(
+        2.3rem,
+        6vw,
+        4rem
+    );
+}
+
+.operator-identification {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 12px 28px;
+
+    margin-bottom: 28px;
+
+    color: var(--muted);
+}
+
+.operator-identification strong {
+    color: var(--text);
+}
+
+.identity-intro {
+    max-width: 760px;
+
+    line-height: 1.7;
+}
+
+.identity-warning {
+    max-width: 760px;
+
+    color: var(--purple);
+
+    line-height: 1.6;
+}
+
+
+.faction-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(260px, 1fr)
+        );
+
+    gap: 18px;
+}
+
+
+.faction-card {
+    position: relative;
+
+    min-height: 330px;
+
+    padding: 24px;
+
+    display: flex;
+    flex-direction: column;
+
+    border: 1px solid
+        color-mix(
+            in srgb,
+            var(--faction-color) 40%,
+            transparent
+        );
+
+    background: #0d1117;
+
+    transition:
+        transform 0.15s ease,
+        border-color 0.15s ease;
+}
+
+.faction-card:hover {
+    transform: translateY(-3px);
+
+    border-color:
+        var(--faction-color);
+}
+
+.faction-symbol {
+    width: 52px;
+    height: 52px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 18px;
+
+    border: 1px solid
+        var(--faction-color);
+
+    color:
+        var(--faction-color);
+
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.faction-symbol.large {
+    width: 72px;
+    height: 72px;
+
+    margin-top: 24px;
+
+    font-size: 1.2rem;
+}
+
+.faction-code {
+    margin-bottom: 8px;
+
+    color:
+        var(--faction-color);
+
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+}
+
+.faction-card h2 {
+    margin:
+        0
+        0
+        16px;
+
+    color: var(--text);
+}
+
+.faction-card p {
+    flex-grow: 1;
+
+    color: var(--muted);
+
+    line-height: 1.6;
+}
+
+.faction-select {
+    display: block;
+
+    margin-top: 20px;
+
+    padding: 12px;
+
+    border: 1px solid
+        var(--faction-color);
+
+    color:
+        var(--faction-color);
+
+    text-align: center;
+    text-decoration: none;
+}
+
+.faction-select:hover {
+    background:
+        var(--faction-color);
+
+    color: var(--background);
+}
+
+
+.faction-confirm {
+    border-color:
+        var(--faction-color);
+}
+
+.faction-confirm h1 {
+    color:
+        var(--faction-color);
+}
+
+.faction-description {
+    max-width: 620px;
+
+    color: var(--muted);
+
+    line-height: 1.7;
+}
+
+.permanent-choice-warning {
+    margin-top: 32px;
+
+    padding: 20px;
+
+    border-left: 2px solid
+        var(--faction-color);
+
+    background:
+        rgba(255, 255, 255, 0.025);
+}
+
+.permanent-choice-warning strong {
+    color:
+        var(--faction-color);
+}
+
+.permanent-choice-warning p {
+    margin-bottom: 0;
+
+    color: var(--muted);
+}
+
+.confirmation-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+
+    gap: 16px;
+
+    margin-top: 30px;
+}
+
+.confirmation-actions form {
+    margin: 0;
+}
+
+.faction-confirm-button {
+    margin: 0;
+
+    border-color:
+        var(--faction-color);
+
+    color:
+        var(--faction-color);
+}
+
+.faction-confirm-button:hover {
+    background:
+        var(--faction-color);
+
+    color: var(--background);
+}
+
+
+@media (max-width: 640px) {
+
+    .faction-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .faction-card {
+        min-height: auto;
+    }
+
+}

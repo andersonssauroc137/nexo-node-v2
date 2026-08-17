@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}
+Confirmar Factrion | NEXO NODE
+{% endblock %}
+
+{% block content %}
+
+<section
+    class="terminal faction-confirm"
+    style="
+        --faction-color:
+        {{ faction.color }};
+    "
+>
+
+    <p class="terminal-label">
+        NEXO NODE // CONFIRMAÇÃO
+    </p>
+
+    <div class="faction-symbol large">
+        {{ faction.symbol }}
+    </div>
+
+    <p class="faction-code">
+        FACTRION // {{ faction.code }}
+    </p>
+
+    <h1>
+        {{ faction.name }}
+    </h1>
+
+    <p class="faction-description">
+        {{ faction.description }}
+    </p>
+
+    <div class="permanent-choice-warning">
+
+        <strong>
+            CONFIRMAÇÃO DE IDENTIDADE
+        </strong>
+
+        <p>
+            Esta Factrion será vinculada ao seu
+            Registro FN.
+        </p>
+
+        <p>
+            A escolha não poderá ser alterada
+            normalmente após a confirmação.
+        </p>
+
+    </div>
+
+    <div class="confirmation-actions">
+
+        <a
+            href="{% url 'identity:choose_faction' %}"
+            class="terminal-link secondary"
+        >
+            VOLTAR
+        </a>
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                class="terminal-button faction-confirm-button"
+            >
+                CONFIRMAR FACTRION
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+{% endblock %}
