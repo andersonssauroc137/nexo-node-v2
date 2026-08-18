@@ -41,6 +41,14 @@ class CityAccessTests(TestCase):
         self
     ):
 
+        self.operator.presentation = (
+            Operator.Presentation.MALE
+        )
+
+        self.operator.shirt_color = (
+            Operator.ShirtColor.CYAN
+        )
+
         self.operator.onboarding_step = (
             Operator.OnboardingStep.COMPLETED
         )

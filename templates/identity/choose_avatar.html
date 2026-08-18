@@ -1,24 +1,150 @@
 {% extends "base.html" %}
 
 {% block title %}
-Avatar | NEXO NODE
+Configuração do Operador | NEXO NODE
 {% endblock %}
 
 {% block content %}
 
-<section class="terminal">
+<section class="avatar-screen">
 
-    <p class="terminal-label">
-        NEXO NODE // APARÊNCIA
-    </p>
+    <header class="identity-header">
 
-    <h1>
-        Aparência do Operador
-    </h1>
+        <p class="terminal-label">
+            NEXO NODE // CONFIGURAÇÃO
+        </p>
 
-    <p>
-        Módulo ainda não sincronizado.
-    </p>
+        <h1>
+            Aparência Inicial
+        </h1>
+
+        <p>
+            Operador:
+            <strong>
+                {{ request.user.network_id }}
+            </strong>
+        </p>
+
+        <p>
+            Factrion:
+            <strong>
+                {{ request.user.faction.name }}
+            </strong>
+        </p>
+
+        <p class="identity-intro">
+            Defina a aparência inicial do seu Operador.
+        </p>
+
+    </header>
+
+
+    <form
+        method="post"
+        class="avatar-form"
+    >
+
+        {% csrf_token %}
+
+
+        <section class="avatar-section">
+
+            <h2>
+                01 // APRESENTAÇÃO
+            </h2>
+
+            <div class="avatar-options">
+
+                {% for value, label in form.presentation.field.choices %}
+
+                    <label class="avatar-option">
+
+                        <input
+                            type="radio"
+                            name="presentation"
+                            value="{{ value }}"
+                            required
+                        >
+
+                        <span class="avatar-option-content">
+
+                            <span class="avatar-preview">
+                                {% if value == "male" %}
+                                    M
+                                {% else %}
+                                    F
+                                {% endif %}
+                            </span>
+
+                            <strong>
+                                {{ label }}
+                            </strong>
+
+                        </span>
+
+                    </label>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+
+        <section class="avatar-section">
+
+            <h2>
+                02 // COR DA CAMISETA
+            </h2>
+
+            <div class="shirt-colors">
+
+                {% for value, label in form.shirt_color.field.choices %}
+
+                    <label
+                        class="shirt-color-option shirt-{{ value }}"
+                    >
+
+                        <input
+                            type="radio"
+                            name="shirt_color"
+                            value="{{ value }}"
+                            required
+                        >
+
+                        <span class="shirt-color-swatch">
+                        </span>
+
+                        <span>
+                            {{ label }}
+                        </span>
+
+                    </label>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+
+        {% if form.errors %}
+
+            <div class="form-error">
+                Verifique as opções selecionadas.
+            </div>
+
+        {% endif %}
+
+
+        <button
+            type="submit"
+            class="terminal-button avatar-confirm-button"
+        >
+            CONFIRMAR OPERADOR
+        </button>
+
+    </form>
 
 </section>
 

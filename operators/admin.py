@@ -12,6 +12,8 @@ class OperatorAdmin(UserAdmin):
         "network_id",
         "email",
         "faction",
+        "presentation",
+        "shirt_color",
         "onboarding_step",
         "is_staff",
         "is_active",
@@ -37,6 +39,8 @@ class OperatorAdmin(UserAdmin):
                 "fields": (
                     "network_id",
                     "faction",
+                    "presentation",
+                    "shirt_color",
                     "onboarding_step",
                     "onboarding_completed_at",
                     "updated_at",

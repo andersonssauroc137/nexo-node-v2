@@ -65,14 +65,6 @@ class OperatorLoginView(LoginView):
 
         if (
             step
-            == operator.OnboardingStep.COGNITIVE_TEST
-        ):
-            return reverse(
-                "identity:cognitive_test"
-            )
-
-        if (
-            step
             == operator.OnboardingStep.CHOOSE_AVATAR
         ):
             return reverse(

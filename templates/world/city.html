@@ -18,11 +18,38 @@ Fortaleza Node
 
     <p>
         Operador:
-        {{ request.user.network_id }}
+        <strong>
+            {{ request.user.network_id }}
+        </strong>
     </p>
 
+    <p>
+        Factrion:
+        <strong>
+            {{ request.user.faction.name }}
+        </strong>
+    </p>
+
+    <p>
+        Apresentação:
+        <strong>
+            {{ request.user.get_presentation_display }}
+        </strong>
+    </p>
+
+    <p>
+        Camiseta:
+        <strong>
+            {{ request.user.get_shirt_color_display }}
+        </strong>
+    </p>
+
+    <div class="network-message">
+        IDENTIDADE DO OPERADOR CONCLUÍDA.
+    </div>
+
     <p class="status">
-        ACESSO AUTORIZADO
+        ACESSO A FORTALEZA NODE AUTORIZADO
     </p>
 
 </section>

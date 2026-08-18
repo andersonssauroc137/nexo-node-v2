@@ -64,7 +64,7 @@ class OnboardingAccessTests(
             200,
         )
 
-    def test_cognitive_test_cannot_be_skipped_to(
+    def test_cognitive_test_route_is_available(
         self
     ):
 
@@ -74,12 +74,11 @@ class OnboardingAccessTests(
             )
         )
 
-        self.assertRedirects(
-            response,
-            reverse(
-                "identity:choose_faction"
-            ),
+        self.assertEqual(
+            response.status_code,
+            200,
         )
+
 
     def test_avatar_cannot_be_skipped_to(
         self
@@ -185,13 +184,13 @@ class FactionSelectionTests(
 
         self.assertEqual(
             self.operator.onboarding_step,
-            Operator.OnboardingStep.COGNITIVE_TEST,
+            Operator.OnboardingStep.CHOOSE_AVATAR,
         )
 
         self.assertRedirects(
             response,
             reverse(
-                "identity:cognitive_test"
+                "identity:choose_avatar"
             ),
         )
 
@@ -204,7 +203,7 @@ class FactionSelectionTests(
         )
 
         self.operator.onboarding_step = (
-            Operator.OnboardingStep.COGNITIVE_TEST
+            Operator.OnboardingStep.CHOOSE_AVATAR
         )
 
         self.operator.save()
@@ -229,6 +228,105 @@ class FactionSelectionTests(
         self.assertRedirects(
             response,
             reverse(
-                "identity:cognitive_test"
+                "identity:choose_avatar"
             ),
+        )
+
+class AvatarSelectionTests(
+    FactionTestsBase
+):
+
+    def setUp(self):
+
+        super().setUp()
+
+        self.operator.faction = (
+            self.terra_nova
+        )
+
+        self.operator.onboarding_step = (
+            Operator.OnboardingStep.CHOOSE_AVATAR
+        )
+
+        self.operator.save()
+
+    def test_avatar_page_is_available(self):
+
+        response = self.client.get(
+            reverse(
+                "identity:choose_avatar"
+            )
+        )
+
+        self.assertEqual(
+            response.status_code,
+            200,
+        )
+
+    def test_avatar_selection_completes_onboarding(
+        self
+    ):
+
+        response = self.client.post(
+            reverse(
+                "identity:choose_avatar"
+            ),
+            {
+                "presentation": "male",
+                "shirt_color": "cyan",
+            },
+        )
+
+        self.operator.refresh_from_db()
+
+        self.assertEqual(
+            self.operator.presentation,
+            Operator.Presentation.MALE,
+        )
+
+        self.assertEqual(
+            self.operator.shirt_color,
+            Operator.ShirtColor.CYAN,
+        )
+
+        self.assertEqual(
+            self.operator.onboarding_step,
+            Operator.OnboardingStep.COMPLETED,
+        )
+
+        self.assertIsNotNone(
+            self.operator.onboarding_completed_at
+        )
+
+        self.assertRedirects(
+            response,
+            reverse(
+                "world:city"
+            ),
+        )
+
+    def test_invalid_avatar_does_not_complete_onboarding(
+        self
+    ):
+
+        response = self.client.post(
+            reverse(
+                "identity:choose_avatar"
+            ),
+            {
+                "presentation": "robot",
+                "shirt_color": "laser-pink-9000",
+            },
+        )
+
+        self.operator.refresh_from_db()
+
+        self.assertEqual(
+            self.operator.onboarding_step,
+            Operator.OnboardingStep.CHOOSE_AVATAR,
+        )
+
+        self.assertEqual(
+            response.status_code,
+            200,
         )

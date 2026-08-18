@@ -31,11 +31,6 @@ class Operator(AbstractUser):
             "Escolher Facção",
         )
 
-        COGNITIVE_TEST = (
-            "cognitive_test",
-            "Teste Cognitivo",
-        )
-
         CHOOSE_AVATAR = (
             "choose_avatar",
             "Escolher aparência",
@@ -44,6 +39,49 @@ class Operator(AbstractUser):
         COMPLETED = (
             "completed",
             "Concluído",
+        )
+
+    class Presentation(models.TextChoices):
+        MALE = (
+            "male",
+            "Masculino",
+        )
+
+        FEMALE = (
+            "female",
+            "Feminino",
+        )
+
+
+    class ShirtColor(models.TextChoices):
+        CYAN = (
+            "cyan",
+            "Ciano",
+        )
+
+        PURPLE = (
+            "purple",
+            "Roxo",
+        )
+
+        GREEN = (
+            "green",
+            "Verde",
+        )
+
+        RED = (
+            "red",
+            "Vermelho",
+        )
+
+        YELLOW = (
+            "yellow",
+            "Amarelo",
+        )
+
+        WHITE = (
+            "white",
+            "Branco",
         )
 
     email = models.EmailField(
@@ -67,6 +105,21 @@ class Operator(AbstractUser):
         related_name="operators",
         verbose_name="Factrion",
     )
+
+    presentation = models.CharField(
+        "apresentação",
+        max_length=10,
+        choices=Presentation.choices,
+        blank=True,
+    )
+
+    shirt_color = models.CharField(
+        "cor da camiseta",
+        max_length=20,
+        choices=ShirtColor.choices,
+        blank=True,
+    )
+
 
     onboarding_step = models.CharField(
         max_length=30,

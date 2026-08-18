@@ -10,11 +10,6 @@ def redirect_operator(operator):
             "identity:choose_faction"
         )
 
-    if step == operator.OnboardingStep.COGNITIVE_TEST:
-        return redirect(
-            "identity:cognitive_test"
-        )
-
     if step == operator.OnboardingStep.CHOOSE_AVATAR:
         return redirect(
             "identity:choose_avatar"

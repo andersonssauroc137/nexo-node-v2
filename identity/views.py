@@ -1,6 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
+from .forms import AvatarSelectionForm
 
 from operators.models import Operator
 from operators.services import redirect_operator
@@ -81,7 +83,7 @@ def confirm_faction(request, faction_slug):
             operator.faction = faction
 
             operator.onboarding_step = (
-                Operator.OnboardingStep.COGNITIVE_TEST
+                Operator.OnboardingStep.CHOOSE_AVATAR
             )
 
             operator.save(
@@ -93,7 +95,7 @@ def confirm_faction(request, faction_slug):
             )
 
         return redirect(
-            "identity:cognitive_test"
+            "identity:choose_avatar"
         )
 
     return render(
@@ -107,14 +109,6 @@ def confirm_faction(request, faction_slug):
 
 @login_required
 def cognitive_test(request):
-
-    if (
-        request.user.onboarding_step
-        != Operator.OnboardingStep.COGNITIVE_TEST
-    ):
-        return redirect_operator(
-            request.user
-        )
 
     return render(
         request,
@@ -133,7 +127,54 @@ def choose_avatar(request):
             request.user
         )
 
+    if request.method == "POST":
+
+        form = AvatarSelectionForm(
+            request.POST
+        )
+
+        if form.is_valid():
+
+            operator = request.user
+
+            operator.presentation = (
+                form.cleaned_data["presentation"]
+            )
+
+            operator.shirt_color = (
+                form.cleaned_data["shirt_color"]
+            )
+
+            operator.onboarding_step = (
+                Operator.OnboardingStep.COMPLETED
+            )
+
+            operator.onboarding_completed_at = (
+                timezone.now()
+            )
+
+            operator.save(
+                update_fields=[
+                    "presentation",
+                    "shirt_color",
+                    "onboarding_step",
+                    "onboarding_completed_at",
+                    "updated_at",
+                ]
+            )
+
+            return redirect(
+                "world:city"
+            )
+
+    else:
+
+        form = AvatarSelectionForm()
+
     return render(
         request,
         "identity/choose_avatar.html",
+        {
+            "form": form,
+        },
     )
