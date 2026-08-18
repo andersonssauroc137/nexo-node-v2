@@ -1,57 +1,89 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}
-Fortaleza Node
+Fortaleza Node | NEXO NODE
+{% endblock %}
+
+{% block extra_css %}
+<link
+    rel="stylesheet"
+    href="{% static 'world/css/city.css' %}"
+>
 {% endblock %}
 
 {% block content %}
 
-<section class="terminal">
+<div class="game-shell">
 
-    <p class="terminal-label">
-        NEXO NODE // FORTALEZA NODE
-    </p>
+    <header class="game-header">
 
-    <h1>
-        Cidade Liberada
-    </h1>
+        <div>
 
-    <p>
-        Operador:
-        <strong>
-            {{ request.user.network_id }}
-        </strong>
-    </p>
+            <p class="game-brand">
+                NEXO NODE // v2
+            </p>
 
-    <p>
-        Factrion:
-        <strong>
-            {{ request.user.faction.name }}
-        </strong>
-    </p>
+            <h1>
+                Fortaleza Node
+            </h1>
 
-    <p>
-        Apresentação:
-        <strong>
-            {{ request.user.get_presentation_display }}
-        </strong>
-    </p>
+        </div>
 
-    <p>
-        Camiseta:
-        <strong>
-            {{ request.user.get_shirt_color_display }}
-        </strong>
-    </p>
 
-    <div class="network-message">
-        IDENTIDADE DO OPERADOR CONCLUÍDA.
-    </div>
+        <div class="operator-hud">
 
-    <p class="status">
-        ACESSO A FORTALEZA NODE AUTORIZADO
-    </p>
+            <span>
+                {{ request.user.network_id }}
+            </span>
 
-</section>
+            <strong>
+                {{ request.user.faction.name }}
+            </strong>
+
+        </div>
+
+    </header>
+
+
+    <main class="game-viewport">
+
+        <canvas
+            id="game-canvas"
+            aria-label="Fortaleza Node"
+        >
+        </canvas>
+
+    </main>
+
+
+    <footer class="game-statusbar">
+
+        <span>
+            WORLD:
+            <strong>ONLINE</strong>
+        </span>
+
+        <span>
+            FPS:
+            <strong data-game-fps>
+                --
+            </strong>
+        </span>
+
+    </footer>
+
+</div>
+
+
+{{ game_operator|json_script:"game-operator-data" }}
+{{ game_world|json_script:"game-world-data" }}
+
+
+<script
+    type="module"
+    src="{% static 'world/js/game.js' %}"
+>
+</script>
 
 {% endblock %}
