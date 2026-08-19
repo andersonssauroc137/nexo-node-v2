@@ -2,27 +2,62 @@ import { GAME_CONFIG } from "./core/config.js";
 import { World } from "./core/world.js";
 import { Camera } from "./core/camera.js";
 
+import { Player } from "./entities/player.js";
+
+import { Input } from "./systems/input.js";
+
 
 class Game {
 
-    constructor(canvas) {
+    constructor({
+        canvas,
+        operator,
+        worldData,
+    }) {
 
         this.canvas = canvas;
 
         this.context =
             canvas.getContext("2d");
 
-        this.world = new World();
-        this.camera = new Camera();
 
-        this.camera.setPosition(
-            600,
-            400
+        this.operator =
+            operator;
+
+
+        this.world =
+            new World(
+                worldData
+            );
+
+
+        this.input =
+            new Input();
+
+
+        this.player =
+            new Player({
+                x: this.world.spawn.x,
+                y: this.world.spawn.y,
+                operator:
+                    this.operator,
+            });
+
+
+        this.camera =
+            new Camera();
+
+
+        this.camera.follow(
+            this.player,
+            this.world
         );
+
 
         this.lastTimestamp = 0;
 
         this.running = false;
+
 
         this.fpsElement =
             document.querySelector(
@@ -46,6 +81,7 @@ class Game {
 
         this.running = true;
 
+
         requestAnimationFrame(
             this.loop.bind(this)
         );
@@ -60,19 +96,25 @@ class Game {
 
 
         const deltaTime =
-            Math.min(
-                (
-                    timestamp
-                    - this.lastTimestamp
-                ) / 1000,
-                0.1
-            );
+            this.lastTimestamp
+                ? Math.min(
+                    (
+                        timestamp
+                        - this.lastTimestamp
+                    ) / 1000,
+                    0.1
+                )
+                : 0;
 
 
-        this.lastTimestamp = timestamp;
+        this.lastTimestamp =
+            timestamp;
 
 
-        this.update(deltaTime);
+        this.update(
+            deltaTime
+        );
+
 
         this.render();
 
@@ -93,6 +135,19 @@ class Game {
         this.world.update(
             deltaTime
         );
+
+
+        this.player.update(
+            deltaTime,
+            this.input,
+            this.world
+        );
+
+
+        this.camera.follow(
+            this.player,
+            this.world
+        );
     }
 
 
@@ -102,10 +157,67 @@ class Game {
             this.context,
             this.camera
         );
+
+
+        this.player.render(
+            this.context,
+            this.camera
+        );
+
+
+        if (GAME_CONFIG.debug) {
+
+            this.renderDebug();
+        }
     }
 
 
-    updateDebugInfo(deltaTime) {
+    renderDebug() {
+
+        const context =
+            this.context;
+
+
+        context.save();
+
+
+        context.fillStyle =
+            "rgba(255, 255, 255, 0.8)";
+
+        context.font =
+            "15px monospace";
+
+
+        context.fillText(
+            `PLAYER ${Math.round(this.player.x)}, ${Math.round(this.player.y)}`,
+            24,
+            90
+        );
+
+
+        context.fillText(
+            `DIR ${this.player.direction}`,
+            24,
+            116
+        );
+
+
+        context.fillText(
+            this.player.isMoving
+                ? "STATE WALK"
+                : "STATE IDLE",
+            24,
+            142
+        );
+
+
+        context.restore();
+    }
+
+
+    updateDebugInfo(
+        deltaTime
+    ) {
 
         if (
             !this.fpsElement
@@ -126,28 +238,10 @@ class Game {
     }
 }
 
-function loadOperatorData() {
 
-    const element =
-        document.getElementById(
-            "game-operator-data"
-        );
-
-
-    if (!element) {
-
-        throw new Error(
-            "Operator data not found."
-        );
-    }
-
-
-    return JSON.parse(
-        element.textContent
-    );
-}
-
-function loadJsonData(elementId) {
+function loadJsonData(
+    elementId
+) {
 
     const element =
         document.getElementById(
@@ -202,7 +296,12 @@ if (canvas) {
 
 
     const game =
-        new Game(canvas);
+        new Game({
+            canvas,
+            operator,
+            worldData,
+        });
+
 
     game.start();
 }

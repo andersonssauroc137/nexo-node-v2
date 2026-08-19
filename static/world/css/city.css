@@ -125,3 +125,24 @@
     }
 
 }
+
+.game-controls {
+    text-align: center;
+}
+
+
+@media (max-width: 700px) {
+
+    .game-statusbar {
+        flex-wrap: wrap;
+    }
+
+    .game-controls {
+        width: 100%;
+
+        order: 3;
+
+        text-align: left;
+    }
+
+}

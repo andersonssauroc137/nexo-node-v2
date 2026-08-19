@@ -3,17 +3,24 @@ import { GAME_CONFIG } from "./config.js";
 
 export class World {
 
-    constructor() {
-        this.width = GAME_CONFIG.world.width;
-        this.height = GAME_CONFIG.world.height;
+    constructor(data) {
+
+        this.width = data.width;
+        this.height = data.height;
+
+        this.spawn = {
+            x: data.spawn.x,
+            y: data.spawn.y,
+        };
 
         this.backgroundColor = "#080b10";
+
         this.gridSize = 100;
     }
 
 
     update(deltaTime) {
-        // Sistemas do mundo entrarão aqui.
+        // Sistemas futuros do mundo.
     }
 
 
@@ -35,6 +42,7 @@ export class World {
             camera
         );
 
+
         this.renderWorldBounds(
             context,
             camera
@@ -53,14 +61,8 @@ export class World {
 
     renderGrid(context, camera) {
 
-        const gridSize = this.gridSize;
-
-        context.save();
-
-        context.strokeStyle =
-            "rgba(49, 230, 255, 0.08)";
-
-        context.lineWidth = 1;
+        const gridSize =
+            this.gridSize;
 
 
         const startX =
@@ -68,6 +70,14 @@ export class World {
 
         const startY =
             -(camera.y % gridSize);
+
+
+        context.save();
+
+        context.strokeStyle =
+            "rgba(49, 230, 255, 0.08)";
+
+        context.lineWidth = 1;
 
 
         for (
@@ -117,6 +127,7 @@ export class World {
         context.restore();
     }
 
+
     renderWorldBounds(
         context,
         camera
@@ -148,7 +159,11 @@ export class World {
         context.restore();
     }
 
-    renderDebug(context, camera) {
+
+    renderDebug(
+        context,
+        camera
+    ) {
 
         context.save();
 
