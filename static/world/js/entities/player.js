@@ -1,4 +1,7 @@
 import { GAME_CONFIG } from "../core/config.js";
+import {
+    CollisionSystem
+} from "../systems/collision.js";
 
 
 const SHIRT_COLORS = {
@@ -102,23 +105,117 @@ export class Player {
             * deltaTime;
 
 
-        this.x =
-            this.clamp(
-                nextX,
-                this.width / 2,
-                world.width
-                    - this.width / 2
-            );
+        const movementX =
+            directionX
+            * this.speed
+            * deltaTime;
 
 
-        this.y =
-            this.clamp(
-                nextY,
-                this.height / 2,
-                world.height
-                    - this.height / 2
-            );
+        const movementY =
+            directionY
+            * this.speed
+            * deltaTime;
+
+
+        this.moveX(
+            movementX,
+            world
+        );
+
+
+        this.moveY(
+            movementY,
+            world
+        );
     }
+
+    moveX(
+    amount,
+    world
+) {
+
+    if (amount === 0) {
+        return;
+    }
+
+
+    const nextX =
+        this.clamp(
+            this.x + amount,
+
+            this.width / 2,
+
+            world.width
+                - this.width / 2
+        );
+
+
+    const collisionBox =
+        this.getCollisionBoxAt(
+            nextX,
+            this.y
+        );
+
+
+    if (
+        CollisionSystem
+            .collidesWithBuildings(
+                collisionBox,
+                world.buildings
+            )
+    ) {
+
+        return;
+    }
+
+
+    this.x =
+        nextX;
+}
+
+moveY(
+    amount,
+    world
+) {
+
+    if (amount === 0) {
+        return;
+    }
+
+
+    const nextY =
+        this.clamp(
+            this.y + amount,
+
+            this.height / 2,
+
+            world.height
+                - this.height / 2
+        );
+
+
+    const collisionBox =
+        this.getCollisionBoxAt(
+            this.x,
+            nextY
+        );
+
+
+    if (
+        CollisionSystem
+            .collidesWithBuildings(
+                collisionBox,
+                world.buildings
+            )
+    ) {
+
+        return;
+    }
+
+
+    this.y =
+        nextY;
+}
 
 
     updateDirection(
@@ -159,6 +256,25 @@ export class Player {
                 maximum
             )
         );
+    }
+
+    get sortY() {
+
+        return this.y + 24;
+    }
+
+    getCollisionBoxAt(
+    x,
+    y
+    ) {
+
+        return {
+            x: x - 9,
+            y: y + 10,
+
+            width: 18,
+            height: 14,
+        };
     }
 
 

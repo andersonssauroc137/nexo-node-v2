@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
-
+from world.models import CityMap
 from operators.models import Operator
 
 from .models import Faction
@@ -239,6 +239,14 @@ class AvatarSelectionTests(
     def setUp(self):
 
         super().setUp()
+
+        self.city_map = CityMap.objects.create(
+            name="Fortaleza Node",
+            slug="fortaleza-node",
+            width=3200,
+            height=2200,
+            is_active=True,
+        )
 
         self.operator.faction = (
             self.terra_nova

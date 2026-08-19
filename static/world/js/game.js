@@ -66,26 +66,32 @@ class Game {
     }
 
 
-    start() {
+async start() {
 
-        this.canvas.width =
-            GAME_CONFIG.canvas.width;
+    this.canvas.width =
+        GAME_CONFIG.canvas.width;
 
-        this.canvas.height =
-            GAME_CONFIG.canvas.height;
-
-
-        this.context.imageSmoothingEnabled =
-            false;
+    this.canvas.height =
+        GAME_CONFIG.canvas.height;
 
 
-        this.running = true;
+    this.context.imageSmoothingEnabled =
+        false;
 
 
-        requestAnimationFrame(
-            this.loop.bind(this)
-        );
-    }
+    this.renderLoading();
+
+
+    await this.world.loadAssets();
+
+
+    this.running = true;
+
+
+    requestAnimationFrame(
+        this.loop.bind(this)
+    );
+}
 
 
     loop(timestamp) {
@@ -151,25 +157,188 @@ class Game {
     }
 
 
-    render() {
+render() {
 
-        this.world.render(
+    this.world.render(
+        this.context,
+        this.camera
+    );
+
+
+    const renderables = [
+        ...this.world.buildings,
+        this.player,
+    ];
+
+
+    renderables.sort(
+        (
+            first,
+            second
+        ) =>
+            first.sortY
+            - second.sortY
+    );
+
+
+    for (
+        const entity
+        of renderables
+    ) {
+
+        entity.render(
             this.context,
             this.camera
         );
-
-
-        this.player.render(
-            this.context,
-            this.camera
-        );
-
-
-        if (GAME_CONFIG.debug) {
-
-            this.renderDebug();
-        }
     }
+
+
+    if (GAME_CONFIG.debug) {
+
+        this.renderCollisionDebug();
+
+        this.renderDebug();
+    }
+}
+
+
+renderLoading() {
+
+    const context =
+        this.context;
+
+
+    context.fillStyle =
+        "#080b10";
+
+
+    context.fillRect(
+        0,
+        0,
+        this.canvas.width,
+        this.canvas.height
+    );
+
+
+    context.fillStyle =
+        "#31e6ff";
+
+
+    context.font =
+        "22px monospace";
+
+
+    context.textAlign =
+        "center";
+
+
+    context.fillText(
+        "SINCRONIZANDO FORTALEZA NODE...",
+        this.canvas.width / 2,
+        this.canvas.height / 2
+    );
+
+
+    context.textAlign =
+        "left";
+}
+
+renderCollisionDebug() {
+
+    const context =
+        this.context;
+
+
+    context.save();
+
+
+    /*
+     * Buildings
+     */
+
+    context.strokeStyle =
+        "rgba(255, 101, 122, 0.9)";
+
+    context.fillStyle =
+        "rgba(255, 101, 122, 0.12)";
+
+    context.lineWidth = 2;
+
+
+    for (
+        const building
+        of this.world.buildings
+    ) {
+
+        const screen =
+            this.camera.worldToScreen(
+                building.collision.x,
+                building.collision.y
+            );
+
+
+        context.fillRect(
+            screen.x,
+            screen.y,
+            building.collision.width,
+            building.collision.height
+        );
+
+
+        context.strokeRect(
+            screen.x,
+            screen.y,
+            building.collision.width,
+            building.collision.height
+        );
+    }
+
+
+    /*
+     * Player
+     */
+
+    const playerBox =
+        this.player
+            .getCollisionBoxAt(
+                this.player.x,
+                this.player.y
+            );
+
+
+    const playerScreen =
+        this.camera.worldToScreen(
+            playerBox.x,
+            playerBox.y
+        );
+
+
+    context.strokeStyle =
+        "#31e6ff";
+
+    context.fillStyle =
+        "rgba(49, 230, 255, 0.18)";
+
+
+    context.fillRect(
+        playerScreen.x,
+        playerScreen.y,
+        playerBox.width,
+        playerBox.height
+    );
+
+
+    context.strokeRect(
+        playerScreen.x,
+        playerScreen.y,
+        playerBox.width,
+        playerBox.height
+    );
+
+
+    context.restore();
+}
+
 
 
     renderDebug() {
@@ -192,6 +361,12 @@ class Game {
             `PLAYER ${Math.round(this.player.x)}, ${Math.round(this.player.y)}`,
             24,
             90
+        );
+
+        context.fillText(
+            `BUILDINGS ${this.world.buildings.length}`,
+            24,
+            168
         );
 
 

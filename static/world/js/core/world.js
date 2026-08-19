@@ -1,4 +1,5 @@
 import { GAME_CONFIG } from "./config.js";
+import { Building } from "../entities/building.js";
 
 
 export class World {
@@ -13,6 +14,14 @@ export class World {
             y: data.spawn.y,
         };
 
+        this.buildings =
+            data.buildings.map(
+            building =>
+                new Building(
+                    building
+                )
+            );
+
         this.backgroundColor = "#080b10";
 
         this.gridSize = 100;
@@ -21,6 +30,16 @@ export class World {
 
     update(deltaTime) {
         // Sistemas futuros do mundo.
+    }
+
+    async loadAssets() {
+
+        await Promise.all(
+            this.buildings.map(
+                building =>
+                    building.load()
+            )
+        );
     }
 
 
