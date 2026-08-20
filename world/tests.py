@@ -325,3 +325,97 @@ class BuildingTests(TestCase):
             building.collision_y,
             710,
         )
+        
+        def test_interaction_position_uses_offsets(
+            self
+        ):
+
+            building = Building.objects.create(
+                map=self.city_map,
+                name="Bloco Interativo",
+                slug="bloco-interativo",
+                image_path=(
+                    "world/img/buildings/"
+                    "building_interactive.png"
+                ),
+                x=900,
+                y=500,
+                width=320,
+                height=320,
+                collision_width=260,
+                collision_height=100,
+                has_entrance=True,
+                interaction_offset_x=135,
+                interaction_offset_y=285,
+                interaction_width=50,
+                interaction_height=35,
+            )
+
+            self.assertEqual(
+                building.interaction_x,
+                1035,
+            )
+
+            self.assertEqual(
+                building.interaction_y,
+                785,
+            )
+            
+            def test_city_sends_building_interaction(
+                self
+            ):
+
+                self.complete_operator()
+
+                Building.objects.create(
+                    map=self.city_map,
+                    name="Bloco Interativo",
+                    slug="bloco-interativo",
+                    image_path=(
+                        "world/img/buildings/"
+                        "building_interactive.png"
+                    ),
+                    x=900,
+                    y=500,
+                    width=320,
+                    height=320,
+                    collision_width=260,
+                    collision_height=100,
+                    has_entrance=True,
+                    interaction_offset_x=135,
+                    interaction_offset_y=285,
+                    interaction_width=50,
+                    interaction_height=35,
+                )
+
+                response = self.client.get(
+                    reverse(
+                        "world:city"
+                    )
+                )
+
+                building = (
+                    response.context[
+                        "game_world"
+                    ]["buildings"][0]
+                )
+
+                self.assertTrue(
+                    building[
+                        "interaction"
+                    ]["enabled"]
+                )
+
+                self.assertEqual(
+                    building[
+                        "interaction"
+                    ]["x"],
+                    1035,
+                )
+
+                self.assertEqual(
+                    building[
+                        "interaction"
+                    ]["type"],
+                    "entrance",
+                )

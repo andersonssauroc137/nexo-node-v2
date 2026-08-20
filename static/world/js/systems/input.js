@@ -31,12 +31,16 @@ export class Input {
             this.handleKeyUp
         );
 
+        this.pressedOnce =
+            new Set();
+
         
     }
 
     handleBlur() {
 
         this.keys.clear();
+        this.pressedOnce.clear();
     }
 
 
@@ -56,6 +60,7 @@ export class Input {
                 "arrowdown",
                 "arrowleft",
                 "arrowright",
+                "e",
             ].includes(key)
         ) {
 
@@ -64,6 +69,29 @@ export class Input {
 
 
         this.keys.add(key);
+    }
+
+    wasPressed(key) {
+
+        const normalized =
+            key.toLowerCase();
+
+
+        if (
+            this.pressedOnce.has(
+                normalized
+            )
+        ) {
+
+            this.pressedOnce.delete(
+                normalized
+            );
+
+            return true;
+        }
+
+
+        return false;
     }
 
 

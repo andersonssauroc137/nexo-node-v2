@@ -35,6 +35,32 @@ export class Building {
                 data.collision.height,
         };
 
+        this.interaction = {
+            enabled:
+                data.interaction?.enabled
+                ?? false,
+
+            x:
+                data.interaction?.x
+                ?? 0,
+
+            y:
+                data.interaction?.y
+                ?? 0,
+
+            width:
+                data.interaction?.width
+                ?? 0,
+
+            height:
+                data.interaction?.height
+                ?? 0,
+
+            type:
+                data.interaction?.type
+                ?? null,
+        };
+
 
         this.image = new Image();
 

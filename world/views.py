@@ -7,7 +7,6 @@ from django.shortcuts import (
 from operators.models import Operator
 from operators.services import redirect_operator
 
-from .models import SpawnPoint
 from django.conf import settings
 
 from .models import (
@@ -113,6 +112,26 @@ def city(request):
 
                     "height":
                         building.collision_height,
+                },
+                
+                "interaction": {
+                    "enabled":
+                        building.has_entrance,
+
+                    "x":
+                        building.interaction_x,
+
+                    "y":
+                        building.interaction_y,
+
+                    "width":
+                        building.interaction_width,
+
+                    "height":
+                        building.interaction_height,
+
+                    "type":
+                        "entrance",
                 },
             }
         )

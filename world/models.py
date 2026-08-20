@@ -199,24 +199,64 @@ class Building(models.Model):
         auto_now=True,
     )
 
-    class Meta:
-        ordering = (
-            "display_order",
-            "name",
+    interaction_offset_x = models.IntegerField(
+    "offset interação X",
+    default=0,
+    )
+
+    interaction_offset_y = models.IntegerField(
+        "offset interação Y",
+        default=0,
+    )
+
+    interaction_width = models.PositiveIntegerField(
+        "largura da interação",
+        default=48,
+    )
+
+    interaction_height = models.PositiveIntegerField(
+        "altura da interação",
+        default=32,
+    )
+
+    has_entrance = models.BooleanField(
+        "possui entrada",
+        default=False,
+    )
+    
+    @property
+    def interaction_x(self):
+        return (
+            self.x
+            + self.interaction_offset_x
         )
 
-        constraints = [
-            models.UniqueConstraint(
-                fields=(
-                    "map",
-                    "slug",
-                ),
-                name="unique_building_slug_per_map",
-            ),
-        ]
 
-        verbose_name = "Prédio"
-        verbose_name_plural = "Prédios"
+    @property
+    def interaction_y(self):
+        return (
+            self.y
+            + self.interaction_offset_y
+        )
+
+        class Meta:
+            ordering = (
+                "display_order",
+                "name",
+            )
+
+            constraints = [
+                models.UniqueConstraint(
+                    fields=(
+                        "map",
+                        "slug",
+                    ),
+                    name="unique_building_slug_per_map",
+                ),
+            ]
+
+            verbose_name = "Prédio"
+            verbose_name_plural = "Prédios"
 
     @property
     def collision_x(self):

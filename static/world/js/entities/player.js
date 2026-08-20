@@ -437,4 +437,21 @@ moveY(
 
         context.stroke();
     }
+
+    getInteractionBox() {
+
+        return {
+            x:
+                this.x - 18,
+
+            y:
+                this.y - 10,
+
+            width:
+                36,
+
+            height:
+                46,
+        };
+    }
 }

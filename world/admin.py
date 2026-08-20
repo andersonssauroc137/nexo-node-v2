@@ -116,4 +116,16 @@ class BuildingAdmin(admin.ModelAdmin):
                 )
             },
         ),
+        (
+            "Interação",
+            {
+                "fields": (
+                    "has_entrance",
+                    "interaction_offset_x",
+                    "interaction_offset_y",
+                    "interaction_width",
+                    "interaction_height",
+                )
+            },
+        ),
     )

@@ -6,6 +6,10 @@ import { Player } from "./entities/player.js";
 
 import { Input } from "./systems/input.js";
 
+import {
+    InteractionSystem
+} from "./systems/interaction.js";
+
 
 class Game {
 
@@ -63,6 +67,32 @@ class Game {
             document.querySelector(
                 "[data-game-fps]"
             );
+
+        this.interactionSystem =
+            new InteractionSystem();
+
+            this.interactionPrompt =
+                document.querySelector(
+                    "[data-interaction-prompt]"
+                );
+
+
+            this.interactionLabel =
+                document.querySelector(
+                    "[data-interaction-label]"
+                );
+
+
+            this.systemMessage =
+                document.querySelector(
+                    "[data-system-message]"
+                );
+
+
+            this.systemMessageTimeout =
+                null;
+
+                
     }
 
 
@@ -149,10 +179,104 @@ async start() {
             this.world
         );
 
+        this.interactionSystem.update(
+            this.player,
+            this.world.buildings
+        );
+
+        this.updateInteractionPrompt();
+
+        this.handleInteractions();
+
 
         this.camera.follow(
             this.player,
             this.world
+        );
+    }
+
+    updateInteractionPrompt() {
+
+        if (
+            !this.interactionPrompt
+        ) {
+            return;
+        }
+
+
+        const interaction =
+            this.interactionSystem
+                .getActiveInteraction();
+
+
+        if (!interaction) {
+
+            this.interactionPrompt.hidden =
+                true;
+
+            return;
+        }
+
+
+        if (
+            interaction.type
+            === "entrance"
+        ) {
+
+            this.interactionLabel
+                .textContent =
+                `ENTRAR // ${interaction.building.name}`;
+        }
+
+
+        this.interactionPrompt.hidden =
+            false;
+    }
+
+    handleInteractions() {
+
+        if (
+            !this.input.wasPressed(
+                "e"
+            )
+        ) {
+            return;
+        }
+
+
+        const interaction =
+            this.interactionSystem
+                .getActiveInteraction();
+
+
+        if (!interaction) {
+            return;
+        }
+
+
+        if (
+            interaction.type
+            === "entrance"
+        ) {
+
+            this.handleBuildingEntrance(
+                interaction.building
+            );
+        }
+    }
+
+    handleBuildingEntrance(
+        building
+    ) {
+
+        console.log(
+            "NEXO NODE // ENTRANCE",
+            building.slug
+        );
+
+
+        this.showSystemMessage(
+            `${building.name}: ESTRUTURA EM SINCRONIZAÇÃO`
         );
     }
 
@@ -290,6 +414,54 @@ renderCollisionDebug() {
             screen.y,
             building.collision.width,
             building.collision.height
+        );
+    }
+
+    /*
+    * Interactions
+    */
+
+    context.strokeStyle =
+        "rgba(255, 215, 106, 0.95)";
+
+    context.fillStyle =
+        "rgba(255, 215, 106, 0.12)";
+
+
+    for (
+        const building
+        of this.world.buildings
+    ) {
+
+        if (
+            !building
+                .interaction
+                .enabled
+        ) {
+            continue;
+        }
+
+
+        const screen =
+            this.camera.worldToScreen(
+                building.interaction.x,
+                building.interaction.y
+            );
+
+
+        context.fillRect(
+            screen.x,
+            screen.y,
+            building.interaction.width,
+            building.interaction.height
+        );
+
+
+        context.strokeRect(
+            screen.x,
+            screen.y,
+            building.interaction.width,
+            building.interaction.height
         );
     }
 
@@ -480,3 +652,4 @@ if (canvas) {
 
     game.start();
 }
+
