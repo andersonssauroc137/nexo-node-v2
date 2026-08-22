@@ -109,7 +109,8 @@ class SpawnPoint(models.Model):
         if self.is_default:
 
             SpawnPoint.objects.filter(
-                is_default=True
+                map=self.map,
+                is_default=True,
             ).exclude(
                 pk=self.pk
             ).update(

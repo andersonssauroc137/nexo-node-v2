@@ -251,24 +251,50 @@ class CityAccessTests(TestCase):
 
 class SpawnPointTests(TestCase):
 
-    def test_only_one_spawn_is_default(
+    def setUp(self):
+
+        self.city_map = (
+            CityMap.objects.create(
+                name="Fortaleza Node",
+                slug="fortaleza-node",
+                width=3200,
+                height=2200,
+            )
+        )
+
+        self.interior_map = (
+            CityMap.objects.create(
+                name="Interior Teste",
+                slug="interior-teste",
+                width=900,
+                height=700,
+            )
+        )
+
+    def test_only_one_default_spawn_per_map(
         self
     ):
 
-        first = SpawnPoint.objects.create(
-            name="Entrada A",
-            code="entrada-a",
-            x=100,
-            y=100,
-            is_default=True,
+        first = (
+            SpawnPoint.objects.create(
+                map=self.city_map,
+                name="Entrada A",
+                code="entrada-a",
+                x=100,
+                y=100,
+                is_default=True,
+            )
         )
 
-        second = SpawnPoint.objects.create(
-            name="Entrada B",
-            code="entrada-b",
-            x=200,
-            y=200,
-            is_default=True,
+        second = (
+            SpawnPoint.objects.create(
+                map=self.city_map,
+                name="Entrada B",
+                code="entrada-b",
+                x=200,
+                y=200,
+                is_default=True,
+            )
         )
 
         first.refresh_from_db()
@@ -280,6 +306,43 @@ class SpawnPointTests(TestCase):
 
         self.assertTrue(
             second.is_default
+        )
+
+    def test_different_maps_can_have_default_spawns(
+        self
+    ):
+
+        city_spawn = (
+            SpawnPoint.objects.create(
+                map=self.city_map,
+                name="Cidade",
+                code="cidade",
+                x=1600,
+                y=1100,
+                is_default=True,
+            )
+        )
+
+        interior_spawn = (
+            SpawnPoint.objects.create(
+                map=self.interior_map,
+                name="Interior",
+                code="interior",
+                x=450,
+                y=350,
+                is_default=True,
+            )
+        )
+
+        city_spawn.refresh_from_db()
+        interior_spawn.refresh_from_db()
+
+        self.assertTrue(
+            city_spawn.is_default
+        )
+
+        self.assertTrue(
+            interior_spawn.is_default
         )
 
 
@@ -419,3 +482,157 @@ class BuildingTests(TestCase):
                     ]["type"],
                     "entrance",
                 )
+            
+class GenericMapTests(TestCase):
+
+    def setUp(self):
+
+        self.faction = (
+            Faction.objects.create(
+                name="Cangaceiros Digitais",
+                slug="cangaceiros-digitais",
+                code="CD",
+                symbol="CD",
+                description="Factrion de teste.",
+                color="#FF8A5B",
+            )
+        )
+
+        self.operator = (
+            Operator.objects.create_user(
+                username="maptester",
+                email="map@test.nexo",
+                password="StrongTestPass989!",
+            )
+        )
+
+        self.operator.faction = (
+            self.faction
+        )
+
+        self.operator.presentation = (
+            Operator.Presentation.MALE
+        )
+
+        self.operator.shirt_color = (
+            Operator.ShirtColor.GREEN
+        )
+
+        self.operator.onboarding_step = (
+            Operator.OnboardingStep.COMPLETED
+        )
+
+        self.operator.save()
+
+        self.client.force_login(
+            self.operator
+        )
+
+        self.interior = (
+            CityMap.objects.create(
+                name="Interior Teste",
+                slug="interior-teste",
+                width=900,
+                height=700,
+            )
+        )
+
+        SpawnPoint.objects.create(
+            map=self.interior,
+            name="Entrada Interior",
+            code="interior-entry",
+            x=450,
+            y=350,
+            is_default=True,
+        )
+
+    def test_generic_map_can_be_loaded(
+        self
+    ):
+
+        response = self.client.get(
+            reverse(
+                "world:map",
+                kwargs={
+                    "map_slug":
+                        "interior-teste",
+                },
+            )
+        )
+
+        self.assertEqual(
+            response.status_code,
+            200,
+        )
+
+        world_data = (
+            response.context[
+                "game_world"
+            ]
+        )
+
+        self.assertEqual(
+            world_data["slug"],
+            "interior-teste",
+        )
+
+        self.assertEqual(
+            world_data["width"],
+            900,
+        )
+
+        self.assertEqual(
+            world_data["height"],
+            700,
+        )
+
+        self.assertEqual(
+            world_data["spawn"]["x"],
+            450,
+        )
+
+        self.assertEqual(
+            world_data["spawn"]["y"],
+            350,
+        )
+        
+        def test_unknown_map_returns_404(
+            self
+        ):
+
+            response = self.client.get(
+                reverse(
+                    "world:map",
+                    kwargs={
+                        "map_slug":
+                            "mapa-do-multiverso-404",
+                    },
+                )
+            )
+
+            self.assertEqual(
+                response.status_code,
+                404,
+            )
+            
+        def test_inactive_map_returns_404(
+            self
+        ):
+
+            self.interior.is_active = False
+            self.interior.save()
+
+            response = self.client.get(
+                reverse(
+                    "world:map",
+                    kwargs={
+                        "map_slug":
+                            "interior-teste",
+                    },
+                )
+            )
+
+            self.assertEqual(
+                response.status_code,
+                404,
+            )

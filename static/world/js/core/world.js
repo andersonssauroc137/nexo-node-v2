@@ -8,6 +8,10 @@ export class World {
 
         this.width = data.width;
         this.height = data.height;
+        this.id = data.id;
+
+        this.name = data.name;
+        this.slug = data.slug;
 
         this.spawn = {
             x: data.spawn.x,
@@ -191,6 +195,12 @@ export class World {
 
         context.font =
             "16px monospace";
+
+        context.fillText(
+            `MAP ${this.slug}`,
+            24,
+            36
+        );
 
 
         context.fillText(
